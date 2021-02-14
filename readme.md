@@ -2,6 +2,8 @@
 
 Framhald af [verkefni 2](https://github.com/vefforritun/vef2-2021-v2).
 
+[Vídeó yfirferð](https://youtu.be/GW-mbrG5dEs).
+
 Bæta skal við:
 
 * 500 gervigögnum í byrjun
