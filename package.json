@@ -1,5 +1,5 @@
 {
-  "name": "vef2-2021-v2-synilausn",
+  "name": "vef2-2021-v3",
   "version": "1.0.0",
   "description": "",
   "main": "./src/app.js",
@@ -7,13 +7,17 @@
     "node": ">= 14"
   },
   "scripts": {
+    "eslint": "eslint *.js ./src/**/*.js",
+    "stylelint": "stylelint ./src/styles/*.scss --syntax scss",
+    "sass": "node-sass --source-map-embed ./src/styles/styles.scss ./public/styles.css",
+    "sass-watch": "node-sass --source-map-embed --watch --recursive src/styles/styles.scss ./public/styles.css",
     "dev": "nodemon ./src/app.js",
     "test": "eslint ./src",
     "start": "node ./src/app.js",
     "setup": "node ./src/setup.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Silja",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^5.0.0",
