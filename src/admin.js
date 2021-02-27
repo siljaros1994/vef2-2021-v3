@@ -37,7 +37,7 @@ async function updateUsers(req, res) {
   const list = await users();
 
   const updates = list.map(async (user) => {
-    const found = admin.find(i => Number.parseInt(i, 10) === user.id);
+    const found = admin.find((i) => Number.parseInt(i, 10) === user.id);
     const formAdmin = Boolean(found);
 
     if (formAdmin !== user.admin) {
