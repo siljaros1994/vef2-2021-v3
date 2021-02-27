@@ -1,41 +1,18 @@
-import { promises } from 'fs';
-import faker from 'faker';
-import util from 'util';
-import { query } from './db.js';
+import { readFile } from 'fs/promises';
+import { query, end } from './db.js';
 
-require('dotenv').config();
+const schemaFile = './sql/schema.sql';
 
-const connectionString = process.env.DATABASE_URL;
+async function create() {
+  const data = await readFile(schemaFile);
 
-const readFileAsync = util.promisify(fs.readFile);
+  await query(data.toString('utf-8'));
 
-async function main() {
-  console.info(`Set upp gagnagrunn á ${connectionString}`);
-  // droppa töflum ef til
-  await query('DROP TABLE IF EXISTS applications');
-  await query('DROP TABLE IF EXISTS users');
-  console.info('Töflum eytt');
+  await end();
 
-  // búa til töflur út frá skema
-  try {
-    const createTable = await readFileAsync('./schema.sql');
-    await query(createTable.toString('utf8'));
-    console.info('Töflur búnar til');
-  } catch (e) {
-    console.error('Villa við að búa til töflur:', e.message);
-    return;
-  }
-
-  // bæta færslum við töflur
-  try {
-    const insert = await readFileAsync('./insert.sql');
-    await query(insert.toString('utf8'));
-    console.info('Gögnum bætt við');
-  } catch (e) {
-    console.error('Villa við að bæta gögnum við:', e.message);
-  }
+  console.info('Schema created');
 }
 
-main().catch((err) => {
-  console.error(err);
+create().catch((err) => {
+  console.error('Error creating schema', err);
 });
