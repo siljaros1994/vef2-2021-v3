@@ -5,10 +5,10 @@ import session from 'express-session';
 import dotenv from 'dotenv';
 import passport from 'passport';
 import { Strategy } from 'passport-local';
-import passport from './login.js';
-import { router as registration } from './registration.js';
-import { router as admin } from './admin.js';
-import { userStrategy, serializeUser, deserializeUser } from ('./users');
+import { router as registrationRouter } from './registration.js';
+import * as adminJs from './admin.js';
+
+const { userStrategy, serializeUser, deserializeUser } = require('./users');
 
 dotenv.config();
 
@@ -41,10 +41,12 @@ passport.deserializeUser(deserializeUser);
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'ejs');
+const path = dirname(fileURLToPath(import.meta.url));
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(join(path, '../public')));
+
+app.set('views', join(path, '../views'));
+app.set('view engine', 'ejs');
 
 /**
  * Hjálparfall til að athuga hvort reitur sé gildur eða ekki.
@@ -54,7 +56,7 @@ app.use(express.static(path.join(__dirname, 'public')));
  * @returns {boolean} `true` ef `field` er í `errors`, `false` annars
  */
 function isInvalid(field, errors) {
-  return Boolean(errors.find(i => i.param === field));
+  return Boolean(errors.find((i) => i.param === field));
 }
 
 app.locals.isInvalid = isInvalid;
@@ -90,7 +92,7 @@ app.post(
   }),
 
   (req, res) => {
-    res.redirect('/applications');
+    res.redirect('/admin');
   },
 );
 
@@ -99,8 +101,8 @@ app.get('/logout', (req, res) => {
   res.redirect('/');
 });
 
-app.use('/', registration);
-app.use('/admin', admin);
+app.use('/admin', adminJs.router);
+app.use('/', registrationRouter);
 
 function notFoundHandler(req, res, next) { // eslint-disable-line
   res.status(404).render('error', { page: 'error', title: '404', error: '404 fannst ekki' });
@@ -115,5 +117,6 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 app.listen(port, () => {
+  // eslint-disable-next-line no-undef
   console.info(`Server running at http://${hostname}:${port}/`);
 });
