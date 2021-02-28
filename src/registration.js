@@ -1,6 +1,6 @@
 import express from 'express';
-import { body, validationResult } from 'express-validator';
 import xss from 'xss';
+import { body, validationResult } from 'express-validator';
 
 import { list, insert } from './db.js';
 
@@ -62,16 +62,7 @@ const xssSanitizationMiddleware = [
 
 const sanitizationMiddleware = [
   body('name').trim().escape(),
-  sanitizeXss('name'),
-
   body('nationalId').blacklist('-'),
-  sanitizeXss('nationalId'),
-
-  body('anonymous'),
-  sanitizeXss('anonymous'),
-
-  body('comment').trim().escape(),
-  sanitizeXss('comment'),
 ];
 
 async function validationCheck(req, res, next) {
